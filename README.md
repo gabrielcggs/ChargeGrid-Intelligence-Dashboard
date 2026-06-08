@@ -28,11 +28,43 @@ A proposta busca solucionar problemas identificados na Sprint 1, como sobrecarga
 
 ---
 
+# Problema e Justificativa
+
+Com o crescimento da mobilidade elétrica, a demanda por estações de carregamento aumenta constantemente. Em ambientes comerciais, vários veículos podem estar conectados ao mesmo tempo, aumentando o consumo energético e podendo causar sobrecarga na rede elétrica.
+
+Além disso, a falta de sistemas inteligentes dificulta o monitoramento do consumo, a cobrança dos usuários e a utilização eficiente da energia disponível.
+
+Diante desse cenário, torna-se necessário o desenvolvimento de soluções capazes de gerenciar a demanda energética de forma inteligente e sustentável.
+
+---
+
 # Evolução da Sprint 1 para a Sprint 2
 
-Na Sprint 1 foram estudados os principais desafios do ChargeGrid Intelligence e propostas possíveis soluções para cada problema.
+Na Sprint 1 foram estudados os desafios relacionados ao gerenciamento de eletropostos e propostas possíveis soluções para cada problema.
 
-Na Sprint 2, essas ideias foram transformadas em uma prova de conceito funcional utilizando Python e Streamlit, permitindo simular situações reais de utilização do sistema.
+Na Sprint 2 essas ideias foram transformadas em uma prova de conceito funcional utilizando Python e Streamlit, permitindo simular cenários reais de utilização do sistema.
+
+---
+
+# Arquitetura do Sistema
+
+O funcionamento da solução segue o fluxo abaixo:
+
+```text
+Usuário
+   ↓
+Dashboard Streamlit
+   ↓
+Simulação de Veículos
+   ↓
+Controle de Demanda
+   ↓
+Cálculo de Consumo
+   ↓
+Análise da IA
+   ↓
+Resultados e Indicadores
+```
 
 ---
 
@@ -40,28 +72,73 @@ Na Sprint 2, essas ideias foram transformadas em uma prova de conceito funcional
 
 O dashboard permite:
 
-* Simular a quantidade de carros conectados
-* Distribuir automaticamente a energia disponível
-* Calcular o consumo total
-* Calcular o valor da cobrança
-* Identificar situações de pico de demanda
-* Exibir decisões automáticas da inteligência artificial
+* Simular a quantidade de carros conectados;
+* Distribuir automaticamente a energia disponível;
+* Calcular o consumo total;
+* Calcular o valor da cobrança;
+* Identificar situações de pico de demanda;
+* Exibir decisões automáticas da inteligência artificial.
 
 ---
 
 # Como o Sistema Funciona
 
-O usuário escolhe a quantidade de veículos conectados através de um controle na tela.
+O usuário define a quantidade de veículos conectados.
 
-A partir dessa informação, o sistema:
+A partir dessa informação o sistema:
 
-1. Calcula a energia disponível para cada veículo
-2. Calcula o consumo total da estação
-3. Calcula o valor da cobrança
-4. Verifica se existe pico de demanda
-5. Exibe uma decisão automática da IA
+1. Calcula a energia disponível por veículo;
+2. Calcula o consumo total da estação;
+3. Calcula o valor da cobrança;
+4. Verifica se existe pico de demanda;
+5. Exibe uma decisão automática da IA.
 
-Se a quantidade de carros for superior a 8, o sistema entende que existe um pico de demanda e ativa uma ação de contenção para evitar sobrecarga.
+Caso a quantidade de veículos seja superior a 8, o sistema identifica uma situação de pico de demanda e recomenda ações para evitar sobrecarga.
+
+---
+
+# Fluxograma
+
+```text
+Início
+   ↓
+Definir quantidade de veículos
+   ↓
+Calcular energia disponível
+   ↓
+Calcular consumo total
+   ↓
+Verificar demanda
+   ↓
+Existe pico?
+   ↓
+Sim → Ativar contenção
+Não → Operação normal
+   ↓
+Exibir resultados
+   ↓
+Fim
+```
+
+---
+
+# Justificativas Técnicas
+
+## Python
+
+Foi escolhido por ser uma linguagem simples, eficiente e amplamente utilizada em projetos de automação, análise de dados e inteligência artificial.
+
+## Streamlit
+
+Permite criar dashboards interativos rapidamente, facilitando a visualização das informações geradas pelo sistema.
+
+## Controle de Demanda
+
+Foi implementado para demonstrar como um sistema inteligente pode evitar sobrecargas elétricas distribuindo melhor a energia disponível.
+
+## Inteligência Artificial
+
+A IA simula decisões automáticas baseadas na quantidade de veículos conectados, auxiliando na otimização do consumo energético.
 
 ---
 
@@ -81,7 +158,9 @@ A IA analisa a quantidade de veículos conectados e toma decisões automáticas 
 
 ## Protocolos Abertos
 
-O projeto considera a integração de diferentes carregadores em uma única plataforma de monitoramento, permitindo uma gestão centralizada da rede de carregamento.
+## Protocolos Abertos
+
+A solução foi planejada para permitir a integração de diferentes carregadores em uma única plataforma de monitoramento, facilitando o gerenciamento centralizado da rede.
 
 ---
 
@@ -99,9 +178,9 @@ Tarifa:
 
 R$ 1,20 por kWh
 
-Fórmulas:
+Fórmulas utilizadas:
 
-Energia por carro:
+Energia por veículo:
 
 energia_total / quantidade_de_carros
 
@@ -112,6 +191,24 @@ quantidade_de_carros × 10
 Valor da cobrança:
 
 consumo_total × 1.20
+
+---
+
+# Sustentabilidade e Energias Renováveis
+
+O projeto foi desenvolvido considerando os conceitos de eficiência energética e sustentabilidade estudados durante o semestre.
+
+O controle inteligente da demanda contribui para reduzir desperdícios energéticos e melhorar a utilização da energia disponível nos carregadores.
+
+Além disso, a proposta pode ser integrada futuramente a sistemas de energia solar fotovoltaica, permitindo que parte da energia utilizada nos carregamentos seja proveniente de fontes renováveis.
+
+A solução contribui para:
+
+* Redução do desperdício de energia;
+* Melhor aproveitamento dos recursos energéticos;
+* Incentivo à mobilidade elétrica;
+* Redução dos impactos ambientais;
+* Desenvolvimento de soluções sustentáveis para cidades inteligentes.
 
 ---
 
@@ -127,35 +224,50 @@ consumo_total × 1.20
 
 Instale as dependências:
 
+```bash
 pip install -r requirements.txt
+```
 
 Execute o dashboard:
 
+```bash
 streamlit run dashboard.py
+```
 
-O sistema abrirá automaticamente no navegador.
+O sistema será aberto automaticamente no navegador.
 
 ---
 
 # Estrutura do Projeto
 
+```text
 ChargeGrid-Intelligence-Dashboard/
 
 dashboard.py
-
 requirements.txt
-
 README.md
+```
+
+---
+
+# Impactos Esperados
+
+* Melhor distribuição de energia;
+* Redução de sobrecargas elétricas;
+* Diminuição do desperdício energético;
+* Maior eficiência operacional;
+* Melhor monitoramento dos carregadores;
+* Incentivo à mobilidade elétrica sustentável.
 
 ---
 
 # Próximos Passos
 
-* Adicionar gráficos de consumo
-* Criar histórico de carregamentos
-* Simular múltiplos carregadores
-* Melhorar as decisões da inteligência artificial
-* Adicionar mais informações ao dashboard
+* Adicionar gráficos de consumo;
+* Criar histórico de carregamentos;
+* Simular múltiplos carregadores;
+* Adicionar novas regras de automação para tomada de decisão
+* Adicionar novas métricas ao dashboard.
 
 ---
 
@@ -163,8 +275,5 @@ README.md
 
 A prova de conceito desenvolvida demonstra como os conceitos estudados na Sprint 1 podem ser aplicados na prática. O dashboard permite visualizar o funcionamento básico de um sistema de gerenciamento de carregamento de veículos elétricos, utilizando controle de demanda, tarifação automática e inteligência artificial para otimizar o uso da energia.
 
-O projeto representa uma evolução da proposta inicial e demonstra o potencial do ChargeGrid Intelligence para tornar o carregamento de veículos elétricos mais eficiente e organizado.
+O projeto representa uma evolução da proposta inicial e demonstra a viabilidade técnica do ChargeGrid Intelligence para ambientes comerciais.
 
----
-
-Projeto acadêmico desenvolvido para o GoodWe Challenge – FIAP.
