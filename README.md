@@ -226,7 +226,7 @@ Instale as dependências:
 pip install -r requirements.txt
 ```
 
-Execute o dashboard:
+Execute o dashboard (digite no terminal):
 
 ```bash
 streamlit run dashboard.py
