@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from auth_service import login
+from auth_service import login, cadastrar
 from firestore_service import listar_sessoes_recarga
 
 st.set_page_config(page_title="ChargeGrid Intelligence", layout="wide")
@@ -14,26 +14,54 @@ if "usuario" not in st.session_state:
     st.session_state.usuario = None
 
 
-def tela_login():
+def tela_login_e_cadastro():
     st.title("ChargeGrid Intelligence")
     st.caption("Acesso restrito a operadores")
 
-    with st.form("form_login"):
-        email = st.text_input("E-mail")
-        senha = st.text_input("Senha", type="password")
-        entrar = st.form_submit_button("Entrar")
+    aba_login, aba_cadastro = st.tabs(["Entrar", "Criar conta"])
 
-    if entrar:
-        resultado = login(email, senha)
-        if resultado["sucesso"]:
-            st.session_state.usuario = resultado
-            st.rerun()
-        else:
-            st.error(f"Falha no login: {resultado['erro']}")
+    with aba_login:
+        with st.form("form_login"):
+            email = st.text_input("E-mail")
+            senha = st.text_input("Senha", type="password")
+            entrar = st.form_submit_button("Entrar")
+
+        if entrar:
+            resultado = login(email, senha)
+            if resultado["sucesso"]:
+                st.session_state.usuario = resultado
+                st.rerun()
+            else:
+                st.error(f"Falha no login: {resultado['erro']}")
+
+    with aba_cadastro:
+        st.caption("Crie seu acesso de operador — não precisa mexer no Firebase.")
+
+        with st.form("form_cadastro"):
+            novo_email = st.text_input("E-mail", key="cadastro_email")
+            nova_senha = st.text_input(
+                "Senha (mínimo 6 caracteres)", type="password", key="cadastro_senha"
+            )
+            confirmar_senha = st.text_input(
+                "Confirme a senha", type="password", key="cadastro_confirmar"
+            )
+            criar_conta = st.form_submit_button("Criar conta")
+
+        if criar_conta:
+            if nova_senha != confirmar_senha:
+                st.error("As senhas não coincidem.")
+            elif len(nova_senha) < 6:
+                st.error("A senha precisa ter pelo menos 6 caracteres.")
+            else:
+                resultado = cadastrar(novo_email, nova_senha)
+                if resultado["sucesso"]:
+                    st.success("Conta criada com sucesso! Agora faça login na aba \"Entrar\".")
+                else:
+                    st.error(f"Não foi possível criar a conta: {resultado['erro']}")
 
 
 if st.session_state.usuario is None:
-    tela_login()
+    tela_login_e_cadastro()
     st.stop()
 
 # ==========================================================
@@ -48,6 +76,8 @@ with st.sidebar:
 
 st.title("ChargeGrid Intelligence")
 st.write("Dashboard de gerenciamento inteligente")
+
+# --- Simulação de operação (mantida do protótipo original) ---
 
 carros = st.slider("Quantidade de carros conectados", 1, 20, 5)
 
@@ -76,6 +106,8 @@ st.write(status)
 
 st.subheader("Decisão da IA")
 st.write(ia)
+
+# --- Histórico real, vindo do Firestore (alimentado pelo Totem) ---
 
 st.divider()
 st.header("Histórico de Sessões de Recarga")
