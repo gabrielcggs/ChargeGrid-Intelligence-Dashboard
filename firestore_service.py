@@ -20,7 +20,10 @@ def salvar_sessao_recarga(modelo: str, porcentagem, kwh) -> str:
     return doc_ref.id
 
 
-
+def listar_sessoes_recarga(limite: int = 100) -> list[dict]:
+    """
+    Retorna as sessões mais recentes, da mais nova para a mais antiga.
+    """
     db = get_db()
 
     docs = (
@@ -39,6 +42,9 @@ def salvar_sessao_recarga(modelo: str, porcentagem, kwh) -> str:
 
 
 def ultima_sessao_recarga() -> dict | None:
-
+    """
+    Retorna a sessão mais recente, ou None se ainda não houver nenhuma.
+    Substitui o antigo `dados[-1]` que era lido do JSON local.
+    """
     sessoes = listar_sessoes_recarga(limite=1)
     return sessoes[0] if sessoes else None

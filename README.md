@@ -219,23 +219,30 @@ A solução contribui para:
 
 ---
 
-# Como Executar
+# Como Executar membros do grupo 
 
-Instale as dependências:
+Este projeto usa Firebase (Firestore + Authentication) para persistir dados
+e autenticar operadores. Antes de rodar, configure:
 
+1. Instale as dependências:
 ```bash
-pip install -r requirements.txt
+   pip install -r requirements.txt
+```
+2. 
+   - Coloque o arquivo `firebase_service_account.json` enviado no whatsapp na raiz do projeto 
+   - Crie um arquivo `.env`e prencha ele com as inforamacoes que tambem estao no whatsapp 
+
+3. Rode o dashboard:
+```bash
+   streamlit run dashboard.py
 ```
 
-Execute o dashboard (digite no terminal):
-
+4. Rode o Totem (em outro terminal, na mesma pasta):
 ```bash
-streamlit run dashboard.py
+   python Totem.py
 ```
 
-O sistema será aberto automaticamente no navegador.
 
----
 
 # Estrutura do Projeto
 
