@@ -1,25 +1,4 @@
-"""
-firebase_config.py
 
-Ponto único de configuração e conexão com o Firebase.
-
-Por que esse arquivo existe separado:
-- O projeto tem DOIS pontos de entrada Python diferentes (dashboard.py, que roda
-  via Streamlit, e Totem.py, que roda como app desktop via customtkinter).
-- Ambos precisam falar com o mesmo Firestore, com as mesmas credenciais.
-- Centralizando a conexão aqui, qualquer um dos dois só precisa fazer:
-      from firebase_config import get_db
-
-Configuração necessária (ver FIREBASE_SETUP.md):
-- Um arquivo .env na raiz do projeto com:
-      FIREBASE_SERVICE_ACCOUNT_PATH=firebase_service_account.json
-      FIREBASE_WEB_API_KEY=coloque_aqui_a_chave_web_do_projeto
-- O arquivo JSON da conta de serviço (baixado do console do Firebase),
-  salvo no caminho apontado por FIREBASE_SERVICE_ACCOUNT_PATH.
-
-IMPORTANTE: nunca commitar o .env nem o JSON da conta de serviço no GitHub
-(ambos já estão listados no .gitignore deste projeto).
-"""
 
 import os
 import firebase_admin
@@ -28,14 +7,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-_db = None  # cache simples em memória do processo
-
+_db = None  
 
 def get_db():
-    """
-    Retorna um cliente Firestore já autenticado, inicializando o app
-    do Firebase Admin SDK na primeira chamada (e reaproveitando nas seguintes).
-    """
+    
     global _db
 
     if _db is not None:

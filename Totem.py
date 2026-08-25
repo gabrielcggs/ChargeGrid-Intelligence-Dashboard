@@ -4,9 +4,6 @@ from firestore_service import salvar_sessao_recarga
 
 
 
-#======================================
-#              Funções
-#======================================
 
 
 # PEGA OS DADOS DO FORMULÁRIO, SALVA NO FIRESTORE, E ABRE O PAINEL DE INFO
@@ -83,9 +80,6 @@ def abrir_painel_informacoes():
     info_custo.pack(pady=(40, 0))
 
 
-#======================================
-#     Configurações da janela
-#======================================
 ctk.set_appearance_mode("light")
 totem = ctk.CTk()
 totem.title("Totem - ChargeGrid Intelligence")
@@ -101,9 +95,7 @@ titulo.pack(pady=(20, 0))
 
 
 
-#======================================
-#      Modelo do Carro
-#======================================
+
 titulo_modelo = ctk.CTkLabel(
     totem,
     text="Informe o modelo do carro: ",
@@ -119,12 +111,6 @@ entrada_modelo = ctk.CTkEntry(
 )
 entrada_modelo.pack(pady=(30, 0))
 
-
-
-
-#======================================
-#      Porcentagem do Carro
-#======================================
 titulo_porcentagem = ctk.CTkLabel(
     totem,
     text="Informe quantos porcento de bateria tem no carro: ",
@@ -141,11 +127,6 @@ entrada_porcentagem = ctk.CTkEntry(
 entrada_porcentagem.pack(pady=(30, 0))
 
 
-
-
-#======================================
-#      kWh do Carro
-#======================================
 titulo_kwh = ctk.CTkLabel(
     totem,
     text="Insira quantos quilo-watts(kWh) cabem no carro: ",
@@ -161,12 +142,6 @@ entrada_kwh = ctk.CTkEntry(
 )
 entrada_kwh.pack(pady=(30, 0))
 
-
-
-
-#======================================
-#            Botão
-#======================================
 botao_proximo = ctk.CTkButton(
     totem,
     text="Concluir",
@@ -177,7 +152,5 @@ botao_proximo = ctk.CTkButton(
     height=50,
 )
 botao_proximo.pack(pady=(100, 0))
-
-
 
 totem.mainloop()

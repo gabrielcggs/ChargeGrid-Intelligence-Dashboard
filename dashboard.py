@@ -6,10 +6,6 @@ from firestore_service import listar_sessoes_recarga
 
 st.set_page_config(page_title="ChargeGrid Intelligence", layout="wide")
 
-# ==========================================================
-#                     Controle de sessão / login
-# ==========================================================
-
 if "usuario" not in st.session_state:
     st.session_state.usuario = None
 
@@ -64,10 +60,6 @@ if st.session_state.usuario is None:
     tela_login_e_cadastro()
     st.stop()
 
-# ==========================================================
-#                     Dashboard (usuário logado)
-# ==========================================================
-
 with st.sidebar:
     st.write(f"👤 Logado como **{st.session_state.usuario['email']}**")
     if st.button("Sair"):
@@ -77,7 +69,7 @@ with st.sidebar:
 st.title("ChargeGrid Intelligence")
 st.write("Dashboard de gerenciamento inteligente")
 
-# --- Simulação de operação (mantida do protótipo original) ---
+# --- Simulação de operação ---
 
 carros = st.slider("Quantidade de carros conectados", 1, 20, 5)
 
@@ -107,7 +99,7 @@ st.write(status)
 st.subheader("Decisão da IA")
 st.write(ia)
 
-# --- Histórico real, vindo do Firestore (alimentado pelo Totem) ---
+# --- Histórico real, vindo do Firestore  ---
 
 st.divider()
 st.header("Histórico de Sessões de Recarga")
