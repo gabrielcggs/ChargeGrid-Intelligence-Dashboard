@@ -15,6 +15,7 @@ O projeto simula um sistema inteligente de gerenciamento de carregamento de veí
 | Lucas Seiji        | 569673 |
 | Pedro Souza        | 569311 |
 | Bruno Yudi         | 571776 |
+| Lucas Barreto      | 573149 |
 
 ---
 

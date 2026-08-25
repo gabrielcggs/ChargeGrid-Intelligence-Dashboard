@@ -1,0 +1,12 @@
+# Segredos do Firebase 
+.env
+firebase_service_account.json
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Dados antigos (substituídos pelo Firestore)
+dados_recarga.json

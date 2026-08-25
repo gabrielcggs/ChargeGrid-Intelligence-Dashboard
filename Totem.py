@@ -1,4 +1,6 @@
 import customtkinter as ctk
+from tkinter import messagebox
+from firestore_service import salvar_sessao_recarga
 
 
 
@@ -7,46 +9,30 @@ import customtkinter as ctk
 #======================================
 
 
-# PEGA, COLOCA NO JSON, E ABRE O PAINEL DE INFO
+# PEGA OS DADOS DO FORMULÁRIO, SALVA NO FIRESTORE, E ABRE O PAINEL DE INFO
 def salvar_tudo():
     modelo = entrada_modelo.get()
     porcentagem = entrada_porcentagem.get()
     kwh = entrada_kwh.get()
 
-    salvar_dados(modelo, porcentagem, kwh)
+    if not modelo or not porcentagem or not kwh:
+        messagebox.showwarning("Campos incompletos", "Preencha modelo, porcentagem e kWh antes de continuar.")
+        return
+
+    try:
+        salvar_dados(modelo, porcentagem, kwh)
+    except Exception as e:
+        messagebox.showerror(
+            "Erro ao salvar no Firebase",
+            f"Não foi possível salvar a sessão de recarga.\n\nDetalhes: {e}",
+        )
+        return
+
     abrir_painel_informacoes()
 
-# CRIA O JSON
+# SALVA A SESSÃO DE RECARGA NO FIRESTORE (substitui o antigo JSON local)
 def salvar_dados(modelo, porcentagem, kwh):
-    import json
-    import os
-
-
-    novo_registro = {
-        "Modelos": modelo,
-        "porcentagem": porcentagem,
-        "kwh": kwh
-    }
-
-    # Verifica se o arquivo já existe
-    if os.path.exists("dados_recarga.json"):
-
-        try:
-            with open("dados_recarga.json", "r", encoding="utf-8") as arquivo:
-                dados = json.load(arquivo)
-
-        except json.JSONDecodeError:
-            dados = []
-
-    else:
-        dados = []
-
-    # Adiciona o novo registro ao histórico
-    dados.append(novo_registro)
-
-    # Salva novamente o arquivo
-    with open("dados_recarga.json", "w", encoding="utf-8") as arquivo:
-        json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+    salvar_sessao_recarga(modelo=modelo, porcentagem=porcentagem, kwh=kwh)
 
 
 # ABRE O PAINEL DE INFORMAÇÕES DO CARRO

@@ -1,10 +1,12 @@
-import json
+from firestore_service import ultima_sessao_recarga
 
-with open("dados_recarga.json", "r", encoding="utf-8") as arquivo:
-    dados = json.load(arquivo)
+ultimo = ultima_sessao_recarga()
 
-ultimo = dados[-1]
-
+if ultimo is None:
+    raise RuntimeError(
+        "Nenhuma sessão de recarga encontrada no Firestore ainda. "
+        "Preencha o formulário do Totem antes de abrir o painel de informações."
+    )
 
 ener_consumida = int(ultimo["kwh"]) - int(ultimo["kwh"]) * (int(ultimo["porcentagem"]) / 100)
 
