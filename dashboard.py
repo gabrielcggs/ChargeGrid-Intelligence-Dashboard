@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import csv
 
 from auth_service import login, cadastrar
 from firestore_service import listar_sessoes_recarga
@@ -107,6 +108,14 @@ st.caption("Dados reais gravados pelo Totem e persistidos no Firestore.")
 
 try:
     sessoes = listar_sessoes_recarga(limite=50)
+    print(sessoes)
+    csv = "\n".join(
+    f"{s['modelo']},{s['kwh']},{s['porcentagem']},{s['criado_em']},{s['id']}"
+    for s in sessoes
+)
+    with open("sessoes.csv", "w") as f:
+        f.write(csv)
+    print()
 except Exception as e:
     sessoes = []
     st.warning(f"Não foi possível carregar o histórico do Firestore agora: {e}")
