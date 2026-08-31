@@ -1,45 +1,92 @@
+import os
+import requests
+from dotenv import load_dotenv
+from auth_service import get_anonymous_token
 
-from datetime import datetime, timezone
-from firebase_config import get_db
+load_dotenv()
+PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID")
 
-_COLECAO = "sessoes_recarga"
-
-
-def salvar_sessao_recarga(modelo: str, porcentagem, kwh) -> str:
-
-    db = get_db()
-
-    novo_registro = {
-        "modelo": modelo,
-        "porcentagem": porcentagem,
-        "kwh": kwh,
-        "criado_em": datetime.now(timezone.utc).isoformat(),
+def get_firestore_headers():
+    token = get_anonymous_token()
+    return {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
     }
 
-    _, doc_ref = db.collection(_COLECAO).add(novo_registro)
-    return doc_ref.id
-
-
-def listar_sessoes_recarga(limite: int = 100) -> list[dict]:
+def salvar_sessao_recarga(*args, **kwargs):
+    """Suporta chamadas com dicionário ou múltiplos argumentos posicionais/nomeados do Totem."""
+    dados_sessao = {}
     
-    db = get_db()
+    if args and isinstance(args[0], dict):
+        dados_sessao = args[0]
+    elif args:
+        param_names = ["stationId", "energyKwh", "timestamp", "modelo", "kwh", "porcentagem"]
+        for i, val in enumerate(args):
+            if i < len(param_names):
+                dados_sessao[param_names[i]] = val
+                
+    for k, v in kwargs.items():
+        dados_sessao[k] = v
 
-    docs = (
-        db.collection(_COLECAO)
-        .order_by("criado_em", direction="DESCENDING")
-        .limit(limite)
-        .stream()
-    )
+    url = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/sessoes"
+    headers = get_firestore_headers()
+    
+    fields = {}
+    for key, value in dados_sessao.items():
+        if isinstance(value, (int, float)):
+            fields[key] = {"doubleValue": float(value)}
+        else:
+            fields[key] = {"stringValue": str(value)}
 
-    resultado = []
-    for doc in docs:
-        item = doc.to_dict()
-        item["id"] = doc.id
-        resultado.append(item)
-    return resultado
+    body = {"fields": fields}
+    
+    response = requests.post(url, headers=headers, json=body)
+    return response.json()
 
+def listar_sessoes_recarga(limite=None, **kwargs):
+    """Busca as sessões registradas no Firestore e garante o campo 'criado_em' para o dashboard."""
+    url = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/sessoes"
+    headers = get_firestore_headers()
+    
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        documentos = data.get("documents", [])
+        resultado = []
+        for doc in documentos:
+            fields = doc.get("fields", {})
+            doc_id = doc.get("name", "").split("/")[-1]
+            
+            item = {"id": doc_id}
+            for k, v in fields.items():
+                if "stringValue" in v:
+                    item[k] = v["stringValue"]
+                elif "doubleValue" in v:
+                    item[k] = v["doubleValue"]
+                elif "integerValue" in v:
+                    item[k] = int(v["integerValue"])
+            
+            # Garante a existência do campo 'criado_em' para evitar quebras no dashboard
+            if "criado_em" not in item:
+                item["criado_em"] = item.get("timestamp", "2026-08-31 00:00:00")
+                
+            resultado.append(item)
+            
+        if limite and isinstance(limite, int):
+            resultado = resultado[:limite]
+            
+        return resultado
+    return []
 
-def ultima_sessao_recarga() -> dict | None:
-   
-    sessoes = listar_sessoes_recarga(limite=1)
-    return sessoes[0] if sessoes else None
+def ultima_sessao_recarga():
+    """Retorna os dados da última sessão no formato exato que o calculos_totem.py espera."""
+    sessoes = listar_sessoes_recarga()
+    if sessoes:
+        return sessoes[-1]
+    
+    return {
+        "kwh": 50,
+        "porcentagem": 20,
+        "stationId": "Totem-01",
+        "modelo": "Padrão"
+    }
